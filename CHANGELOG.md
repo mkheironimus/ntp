@@ -2,6 +2,46 @@
 
 This file is used to list changes made in each version of the ntp cookbook.
 
+## 3.3.1 (2016-12-21)
+- Fix resource cloning warning in recipe[default]
+
+## 3.3.0 (2016-12-16)
+- Add Mac OS X client config support
+
+## 3.2.1 (2016-11-23)
+- Update leap seconds file to version 3676924800
+
+## 3.2.0 (2016-09-28)
+- Remove support for Arch
+- Remove legacy apparmor config that wasn't used
+- Don't install ntpdate (and uninstall it) on Ubuntu 16.04+
+- Expand specs and avoid deprecation warnings
+
+## 3.1.0 (2016-09-16)
+
+- Require Chef 12.1 not 12.0
+- Remove the dependency on the Windows cookbook
+
+## 3.0.0 (2016-09-07)
+
+- Require Chef 12+
+
+## 2.0.3 (2016-08-31)
+
+- Remove minitest tests from the undo recipe
+
+## 2.0.2 (2016-08-30)
+
+- Replace node.set with node.normal to avoid deprecation notices
+
+## 2.0.1 (2016-08-29)
+
+- Update the leap seconds file
+- Remove node name from configs
+- Switch to cookstyle and use the Rakefile directly for testing in Travis CI
+- Update platforms we test on
+- Fix failing Chefspecs and avoid deprecation warnings during spec runs
+
 ## v2.0.0 (2016-05-18)
 
 - Remove the undo recipe. This functionality is better suited for a custom cookbook that matches the needs of individual organizations

@@ -1,12 +1,12 @@
 #
-# Cookbook Name:: ntp
+# Cookbook:: ntp
 # Attributes:: default
 #
 # Author:: Joshua Timberman (<joshua@chef.io>)
 # Author:: Tim Smith (<tsmith@chef.io>)
 # Author:: Charles Johnson (<charles@chef.io>)
 #
-# Copyright 2009-2015, Chef Software, Inc.
+# Copyright:: 2009-2016, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -86,7 +86,6 @@ default['ntp']['localhost']['noquery'] = false
 # overrides on a platform-by-platform basis
 case node['platform_family']
 when 'debian'
-  default['ntp']['packages'] = %w(ntp ntpdate)
   default['ntp']['service'] = 'ntp'
   default['ntp']['apparmor_enabled'] = true if File.exist? '/etc/init.d/apparmor'
 when 'rhel', 'fedora'

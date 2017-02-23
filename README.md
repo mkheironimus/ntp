@@ -12,18 +12,18 @@ Installs and configures ntp. On Windows systems it uses the Meinberg port of the
 - RedHat-family Linux Distributions
 - Fedora
 - Gentoo Linux
-- Arch Linux
 - openSUSE
 - FreeBSD
 - Windows 2008 R2+
+- Mac OS X 10.11+
 
 ### Chef
 
-- Chef 11+
+- Chef 12.1+
 
 ### Cookbooks
 
-- windows
+- none
 
 ## Attributes
 
@@ -268,6 +268,10 @@ The timeX.int.example.org used in these roles should be the names or IP addresse
 ### windows_client recipe
 
 Windows only. Apply on a Windows host to install the Meinberg NTPd client.
+
+### mac_os_x_client recipe
+
+Mac OS X only. Apply on a Mac OS X host to configure NTP.
 
 ## License & Authors
 

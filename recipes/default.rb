@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: ntp
+# Cookbook:: ntp
 # Recipe:: default
 # Author:: Joshua Timberman (<joshua@chef.io>)
 # Author:: Tim Smith (<tsmith@chef.io>)
 #
-# Copyright 2009-2015, Chef Software, Inc.
+# Copyright:: 2009-2016, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,12 +20,23 @@
 
 ::Chef::Resource.send(:include, Opscode::Ntp::Helper)
 
-if platform_family?('windows')
+case node['platform_family']
+when 'windows'
   include_recipe 'ntp::windows_client'
+when 'mac_os_x'
+  include_recipe 'ntp::mac_os_x_client'
+  # On OS X we only support simple client config and nothing more
+  return 0
 else
 
   node['ntp']['packages'].each do |ntppkg|
     package ntppkg
+  end
+
+  package 'Remove ntpdate' do
+    package_name 'ntpdate'
+    action :remove
+    only_if { node['platform_family'] == 'debian' && node['platform_version'].to_i >= 16 }
   end
 
   [node['ntp']['varlibdir'], node['ntp']['statsdir']].each do |ntpdir|
@@ -52,14 +63,14 @@ if node['ntp']['servers'].empty?
     '0.pool.ntp.org',
     '1.pool.ntp.org',
     '2.pool.ntp.org',
-    '3.pool.ntp.org'
+    '3.pool.ntp.org',
   ]
   Chef::Log.debug 'No NTP servers specified, using default ntp.org server pools'
 end
 
 if node['ntp']['listen'].nil? && !node['ntp']['listen_network'].nil?
   if node['ntp']['listen_network'] == 'primary'
-    node.set['ntp']['listen'] = node['ipaddress']
+    node.normal['ntp']['listen'] = node['ipaddress']
   else
     require 'ipaddr'
     net = IPAddr.new(node['ntp']['listen_network'])
@@ -67,7 +78,7 @@ if node['ntp']['listen'].nil? && !node['ntp']['listen_network'].nil?
     node['network']['interfaces'].each do |_iface, addrs|
       addrs['addresses'].each do |ip, params|
         addr = IPAddr.new(ip) if params['family'].eql?('inet') || params['family'].eql?('inet6')
-        node.set['ntp']['listen'] = addr if net.include?(addr)
+        node.normal['ntp']['listen'] = addr if net.include?(addr)
       end
     end
   end
@@ -97,7 +108,7 @@ if node['ntp']['sync_clock'] && !platform_family?('windows')
   end
 
   execute 'Force sync system clock with ntp server' do
-    command node['platform_family'] == 'freebsd' ? "ntpd -q" : "ntpd -q -u #{node['ntp']['var_owner']}"
+    command node['platform_family'] == 'freebsd' ? 'ntpd -q' : "ntpd -q -u #{node['ntp']['var_owner']}"
     action :run
     notifies :start, "service[#{node['ntp']['service']}]"
   end

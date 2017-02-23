@@ -1,12 +1,12 @@
 #
-# Cookbook Name:: ntp
+# Cookbook:: ntp
 # Test:: attributes_spec
 #
 # Author:: Fletcher Nichol
 # Author:: Eric G. Wolfe
 #
-# Copyright 2012, Fletcher Nichol
-# Copyright 2012, Eric G. Wolfe
+# Copyright:: 2012-2016, Fletcher Nichol
+# Copyright:: 2012-2016, Eric G. Wolfe
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 require 'spec_helper'
 
 describe 'ntp attributes' do
-  let(:chef_run) { ChefSpec::SoloRunner.new.converge('ntp::default') }
+  let(:chef_run) { ChefSpec::SoloRunner.new(platform: 'aix', version: '6.1').converge('ntp::default') }
   let(:ntp) { chef_run.node['ntp'] }
 
   describe 'on an unknown platform' do
@@ -169,16 +169,16 @@ describe 'ntp attributes' do
   end
 
   describe 'on Debian-family platforms' do
-    let(:chef_run) { ChefSpec::SoloRunner.new(platform: 'ubuntu', version: '12.04').converge('ntp::default') }
+    let(:chef_run) { ChefSpec::SoloRunner.new(platform: 'debian', version: '8.5').converge('ntp::default') }
 
     it 'sets the package list to ntp & ntpdate' do
       expect(ntp['packages']).to include('ntp')
-      expect(ntp['packages']).to include('ntpdate')
+      expect(ntp['packages']).to_not include('ntpdate')
     end
   end
 
   describe 'on Ubuntu' do
-    let(:chef_run) { ChefSpec::SoloRunner.new(platform: 'ubuntu', version: '12.04').converge('ntp::default') }
+    let(:chef_run) { ChefSpec::SoloRunner.new(platform: 'ubuntu', version: '16.04').converge('ntp::default') }
 
     it 'sets the apparmor_enabled attribute to true when /etc/init.d/apparmor exists' do
       allow(File).to receive(:exist?).and_call_original
@@ -236,14 +236,6 @@ describe 'ntp attributes' do
 
     it 'sets the package_url correctly' do
       expect(ntp['package_url']).to eq('https://www.meinbergglobal.com/download/ntp/windows/ntp-4.2.8p5-win32-setup.exe')
-    end
-
-    it 'sets the vs_runtime_url correctly' do
-      expect(ntp['vs_runtime_url']).to eq('http://download.microsoft.com/download/1/1/1/1116b75a-9ec3-481a-a3c8-1777b5381140/vcredist_x86.exe')
-    end
-
-    it 'sets the vs_runtime_productname correctly' do
-      expect(ntp['vs_runtime_productname']).to eq('Microsoft Visual C++ 2008 Redistributable - x86 9.0.21022')
     end
   end
 
